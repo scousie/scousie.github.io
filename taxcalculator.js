@@ -18,15 +18,15 @@ document.addEventListener("DOMContentLoaded", function() {
         </div>
         <div class="form-group">
           <label for="aankoop-prijs-${aankoopInfoCounter}">Aankoopprijs</label>
-          <input type="number" class="form-control" id="aankoop-prijs-${aankoopInfoCounter}" required>
+          <input type="text" class="form-control" id="aankoop-prijs-${aankoopInfoCounter}" required>
         </div>
         <div class="form-group">
           <label for="aantal-stuks-${aankoopInfoCounter}">Aantal stuks</label>
-          <input type="number" class="form-control" id="aantal-stuks-${aankoopInfoCounter}" required>
+          <input type="text" class="form-control" id="aantal-stuks-${aankoopInfoCounter}" required>
         </div>
         <div class="form-group">
           <label for="tisbis-aankoop-${aankoopInfoCounter}">TISbis op moment van aankoop</label>
-          <input type="number" class="form-control" id="tisbis-aankoop-${aankoopInfoCounter}">
+          <input type="text" class="form-control" id="tisbis-aankoop-${aankoopInfoCounter}">
         </div>
       `;
       aankoopInfoContainer.appendChild(aankoopInfo);
@@ -36,32 +36,32 @@ document.addEventListener("DOMContentLoaded", function() {
       e.preventDefault();
   
       var verkoopDatum = document.getElementById("verkoop-datum").value;
-      var aantalStuks = document.getElementById("aantal-stuks").value;
-      var verkoopPrijs = document.getElementById("verkoop-prijs").value;
-      var assetTest = document.getElementById("asset-test").value;
-      var tisbisVerkoop = document.getElementById("tisbis-verkoop").value;
+      var aantalStuks = parseFloat(document.getElementById("aantal-stuks").value);
+      var verkoopPrijs = parseFloat(document.getElementById("verkoop-prijs").value);
+      var assetTest = parseFloat(document.getElementById("asset-test").value);
+      var tisbisVerkoop = parseFloat(document.getElementById("tisbis-verkoop").value);
   
       var belastbareBasis = 0;
       var details = ''
       for (var i = 1; i <= aankoopInfoCounter; i++) {
         var aankoopDatum = document.getElementById(`aankoop-datum-${i}`).value;
-        var aankoopPrijs = document.getElementById(`aankoop-prijs-${i}`).value;
-        var aantalStuksAankoop = document.getElementById(`aantal-stuks-${i}`).value;
-        var tisbisAankoop = document.getElementById(`tisbis-aankoop-${i}`).value;
+        var aankoopPrijs = parseFloat(document.getElementById(`aankoop-prijs-${i}`).value);
+        var aantalStuksAankoop = parseFloat(document.getElementById(`aantal-stuks-${i}`).value);
+        var tisbisAankoop = parseFloat(document.getElementById(`tisbis-aankoop-${i}`).value);
   
         if (tisbisVerkoop && tisbisAankoop) {
           belastbareBasisTISbis = (tisbisVerkoop - tisbisAankoop) * aantalStuksAankoop;
           if (belastbareBasisTISbis < (verkoopPrijs - aankoopPrijs) * aantalStuksAankoop) {
             belastbareBasis += (tisbisVerkoop - tisbisAankoop) * aantalStuksAankoop;
-            details += `TISbis gebruikt: (${tisbisVerkoop} - ${tisbisAankoop}) * ${aantalStuksAankoop} = ${(tisbisVerkoop - tisbisAankoop) * aantalStuksAankoop} <br>`;
+            details += `[Aankoop op ${aankoopDatum}] TISbis gebruikt: (${tisbisVerkoop} - ${tisbisAankoop}) * ${aantalStuksAankoop} = ${(tisbisVerkoop - tisbisAankoop) * aantalStuksAankoop} <br>`;
           } else { 
             belastbareBasis += (verkoopPrijs - aankoopPrijs) * aantalStuksAankoop
-            details += `TISbis aanwezig maar NAV-beperking: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop} <br>`;
+            details += `[Aankoop op ${aankoopDatum}] TISbis aanwezig maar NAV-beperking: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop} <br>`;
 
           }
         } else {
           belastbareBasis += (verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100);
-          details += `Asset test gebruikt: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} * ${aantalStuksAankoop / 100} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100)} <br>`;
+          details += `[Aankoop op ${aankoopDatum}] Asset test gebruikt: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} * ${aantalStuksAankoop / 100} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100)} <br>`;
         }
       }
   
@@ -103,12 +103,12 @@ document.addEventListener("DOMContentLoaded", function() {
             <td>${details}</td>
           </tr>
         </table>
+        <button type="submit" class="btn btn-pink mt-3" id="download-btn" >Download</button>
       `;
 
       resultContainer.classList.remove("d-none");
-    });    
 
-    document.getElementById("download-btn").addEventListener("click", function() {
+      document.getElementById("download-btn").addEventListener("click", function() {
         /* Get the data from the table */
         var data = [];
         var headers = [];
@@ -134,4 +134,5 @@ document.addEventListener("DOMContentLoaded", function() {
         /* Download the workbook */
         XLSX.writeFile(wb, "berekening.xlsx");
     });
+    });    
   });
