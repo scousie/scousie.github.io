@@ -10,6 +10,9 @@
   <body class="bg-dark text-pink">
     <div class="container mt-5">
       <h1 class="text-center mb-5">RTB Calculator</h1>
+      <div class="alert alert-danger" role="alert">
+        <strong>Opgelet!</strong> Amerikaanse getalnotatie (punt ipv komma)!
+      </div>
       <form id="tax-calculator-form">
         <h2 class="text-center mb-5">Verkoop informatie</h2>
         <div class="form-group">
@@ -37,6 +40,7 @@
         <div>
           <label for="excel-file">Upload Excel file met aankoopdata</label><br>
           <input type="file" class="form-control-file" id="excel-file">
+          <button type="button" class="btn btn-pink mt-3" id="bereken-excel">Bereken belasting</button>
           </div>
         <br>
         <div id="aankoop-info-container">

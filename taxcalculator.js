@@ -33,18 +33,14 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     //import Excelfile
-
+    var parsedData
     async function handleFileAsync(e) {
       const file = e.target.files[0];
       const data = await file.arrayBuffer();
       const workbook = XLSX.read(data);
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
-      const parsedData = XLSX.utils.sheet_to_json(worksheet);
-      const dateValue = 40458;
-      const date = XLSX.SSF.parse_date_code(dateValue);
-      alert(JSON.stringify(date))
-      alert(JSON.stringify(parsedData));
+      parsedData = XLSX.utils.sheet_to_json(worksheet);
     }
     
     const fileInput = document.getElementById("excel-file");
@@ -53,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
     taxCalculatorForm.addEventListener("submit", function(e) {
       e.preventDefault();
   
-      var verkoopDatum = document.getElementById("verkoop-datum").value;
+      var verkoopDatum = new Date(document.getElementById("verkoop-datum").value);
       var aantalStuks = parseFloat(document.getElementById("aantal-stuks").value);
       var verkoopPrijs = parseFloat(document.getElementById("verkoop-prijs").value);
       var assetTest = parseFloat(document.getElementById("asset-test").value);
@@ -62,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var belastbareBasis = 0;
       var details = ''
       for (var i = 1; i <= aankoopInfoCounter; i++) {
-        var aankoopDatum = document.getElementById(`aankoop-datum-${i}`).value;
+        var aankoopDatum = new Date(document.getElementById(`aankoop-datum-${i}`).value);
         var aankoopPrijs = parseFloat(document.getElementById(`aankoop-prijs-${i}`).value);
         var aantalStuksAankoop = parseFloat(document.getElementById(`aantal-stuks-${i}`).value);
         var tisbisAankoop = parseFloat(document.getElementById(`tisbis-aankoop-${i}`).value);
@@ -71,15 +67,15 @@ document.addEventListener("DOMContentLoaded", function() {
           belastbareBasisTISbis = (tisbisVerkoop - tisbisAankoop) * aantalStuksAankoop;
           if (belastbareBasisTISbis < (verkoopPrijs - aankoopPrijs) * aantalStuksAankoop) {
             belastbareBasis += (tisbisVerkoop - tisbisAankoop) * aantalStuksAankoop;
-            details += `[Aankoop op ${aankoopDatum}] TISbis gebruikt: (${tisbisVerkoop} - ${tisbisAankoop}) * ${aantalStuksAankoop} = ${(tisbisVerkoop - tisbisAankoop) * aantalStuksAankoop} <br>`;
+            details += `[Aankoop op ${aankoopDatum.toLocaleDateString()}] TISbis gebruikt: (${tisbisVerkoop} - ${tisbisAankoop}) * ${aantalStuksAankoop} = ${(tisbisVerkoop - tisbisAankoop) * aantalStuksAankoop} <br>`;
           } else { 
             belastbareBasis += (verkoopPrijs - aankoopPrijs) * aantalStuksAankoop
-            details += `[Aankoop op ${aankoopDatum}] TISbis aanwezig maar NAV-beperking: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop} <br>`;
+            details += `[Aankoop op ${aankoopDatum.toLocaleDateString()}] TISbis aanwezig maar NAV-beperking: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop} <br>`;
 
           }
         } else {
           belastbareBasis += (verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100);
-          details += `[Aankoop op ${aankoopDatum}] Asset test gebruikt: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} * ${assetTest / 100} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100)} <br>`;
+          details += `[Aankoop op ${aankoopDatum.toLocaleDateString()}] Asset test gebruikt: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} * ${assetTest / 100} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100)} <br>`;
         }
       }
   
@@ -152,5 +148,25 @@ document.addEventListener("DOMContentLoaded", function() {
         /* Download the workbook */
         XLSX.writeFile(wb, "berekening.xlsx");
     });
+
+
     });    
+
+
+    document.getElementById("bereken-excel").addEventListener("click", function() {
+      alert('check');
+      alert(JSON.stringify(parsedData));
+      for (const row of parsedData) {
+        var dateObject = XLSX.SSF.parse_date_code(row["Date of Purchase"]);
+        var dateOfPurchase = new Date(dateObject.y, dateObject.m - 1, dateObject.d);
+        var purchasePrice = row["Purchase Price"];
+        var numberOfPieces = row["Number of Pieces"];
+        var tisbisAtTimeOfPurchase = row["TISbis at time of purchase"];
+        alert(dateOfPurchase.toLocaleDateString());
+        alert(purchasePrice);
+        alert(numberOfPieces);
+        alert(tisbisAtTimeOfPurchase);
+      }      
+    });
+
   });
