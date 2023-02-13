@@ -31,6 +31,24 @@ document.addEventListener("DOMContentLoaded", function() {
       `;
       aankoopInfoContainer.appendChild(aankoopInfo);
     });
+
+    //import Excelfile
+
+    async function handleFileAsync(e) {
+      const file = e.target.files[0];
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const parsedData = XLSX.utils.sheet_to_json(worksheet);
+      const dateValue = 40458;
+      const date = XLSX.SSF.parse_date_code(dateValue);
+      alert(JSON.stringify(date))
+      alert(JSON.stringify(parsedData));
+    }
+    
+    const fileInput = document.getElementById("excel-file");
+    fileInput.addEventListener("change", handleFileAsync, false);
   
     taxCalculatorForm.addEventListener("submit", function(e) {
       e.preventDefault();
@@ -61,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
           }
         } else {
           belastbareBasis += (verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100);
-          details += `[Aankoop op ${aankoopDatum}] Asset test gebruikt: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} * ${aantalStuksAankoop / 100} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100)} <br>`;
+          details += `[Aankoop op ${aankoopDatum}] Asset test gebruikt: (${verkoopPrijs} - ${aankoopPrijs}) * ${aantalStuksAankoop} * ${assetTest / 100} = ${(verkoopPrijs - aankoopPrijs) * aantalStuksAankoop * (assetTest / 100)} <br>`;
         }
       }
   
