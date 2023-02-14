@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        background-color: #333;
+        color: #fff;
+      }
+  
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+  
+      .btn-pink {
+        background-color: #ff69b4;
+        color: #333;
+        border-radius: 0;
+      }
+  
+      #result-container {
+        background-color: #fff;
+        color: #333;
+        padding: 20px;
+        border-radius: 10px;
+      }
+  
+      .colleagues {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 500px;
+        width: 100%;
+        box-shadow: 2px 2px 2px 2px grey;
+        margin: 20px;
+      }
+  
+      .colleague-container {
+        width: 50%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+  
+      .colleague {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        height: 150px;
+        width: 150px;
+        margin: 10px;
+        background-color: #ff69b4;
+        cursor: grab;
+        color: #333;
+        font-size: 20px;
+        border: 2px solid #333;
+        box-shadow: 2px 2px 2px 2px grey;
+      }
+  
+      .selected {
+        background-color: grey;
+        cursor: default;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="colleagues" id="allColleagues">
+        <div class="colleague" id="colleague1" draggable="true">Jan</div>
+        <div class="colleague" id="colleague2" draggable="true">Piet</div>
+        <div class="colleague" id="colleague3" draggable="true">Bavo</div>
+        <div class="colleague" id="colleague4" draggable="true">Nele</div>
+        <div class="colleague" id="colleague5" draggable="true">Celine</div>
+        <div class="colleague" id="colleague6" draggable="true">Karen</div>
+      </div>
+      <div class="colleagues" id="presentColleagues"></div>
+    </div>
+    <div class="container">
+      <button id="selectButton" class="btn btn-primary">Select</button>
+    </div>
+    <script src="steffimax.js"></script>
+  </body>
+</html>
